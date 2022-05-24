@@ -14,12 +14,6 @@ contributions:
     - id: napari-ISM.make_sample_data
       python_name: napari_ism._sample_data:make_sample_data
       title: Load sample data from Adaptive Pixel Reassignment 
-    - id: napari-ISM.make_qwidget
-      python_name: napari_ism._widget:ExampleQWidget
-      title: Make example QWidget
-    - id: napari-ISM.make_magic_widget
-      python_name: napari_ism._widget:example_magic_widget
-      title: Make example magic widget
     - id: napari-ISM.APR_stack
       python_name: napari_ism._widget:APR_stack
       title: Make example function widget
@@ -42,10 +36,6 @@ contributions:
       display_name: Adaptive Pixel Reassignment
       key: unique_id.1 
   widgets:
-    - command: napari-ISM.make_qwidget
-      display_name: Example QWidget
-    - command: napari-ISM.make_magic_widget
-      display_name: Example Magic Widget
     - command: napari-ISM.APR_stack
       autogenerate: true
       display_name: APR_stack
