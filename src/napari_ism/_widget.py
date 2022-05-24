@@ -39,9 +39,7 @@ def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.t
     
     result = np.repeat(result, sz[-1], axis = data_apr.ndim)
     
-    print(sz)
-    print(result.shape)
-
+    return result
 
 def APR(dset, usf = 10, ref = 12):
     
@@ -73,8 +71,5 @@ def SumSPAD(img_layer: "napari.layers.Image") -> "napari.types.ImageData":
     result = np.expand_dims(data_sum, axis = data_sum.ndim)
     
     result = np.repeat(result, sz[-1], axis = data_sum.ndim )
-    
-    print(sz)
-    print(result.shape)
     
     return result

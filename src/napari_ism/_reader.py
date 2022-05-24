@@ -67,7 +67,10 @@ def reader_h5(path):
     # Load data
 
     f = h5py.File(paths[0])
-    dset = f["data"][0,:,:,:,:]
+    
+    data_name = list(f.keys())[0]
+    print(data_name)
+    dset = f[data_name][0,:,:,:,:]
     dset = np.sum(dset, axis = -2)
     
     data = np.squeeze(dset)
