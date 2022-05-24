@@ -7,8 +7,6 @@ https://napari.org/plugins/guides.html?#readers
 """
 import numpy as np
 import h5py
-# from napari.utils.notifications import show_info
-
     
 def napari_get_reader(path):
     """A basic implementation of a Reader contribution.
