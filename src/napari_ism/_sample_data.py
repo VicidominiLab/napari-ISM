@@ -12,7 +12,7 @@ import numpy as np
 from numpy.random import poisson, rand
 from scipy.signal import convolve
 # from scipy.ndimage import fourier_shift
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 def gauss2d(X, Y, mux, muy, sigma):
     
@@ -34,37 +34,20 @@ def make_sample_data():
     
     obj = rand(N, N) // 0.9999
     
-    #psf
-    
-    # mu = 0
-    # sigma = 3
-    # h = gauss2d(X, Y, mu, sigma)
-    # h /= np.sum(h)
-    
     #shift vectors
     
     Ndet = 5
+    sigma = 3
     
-    sx = np.arange(Ndet**2) - 5//2
-    SX, SY = np.meshgrid(sx, sx)
-    # S = np.sqrt(SX**2 + SY**2)
-    # shifts = 10*S.ravel()
-    
-    #shifted psfs
+    sx = ( np.arange(Ndet) - 5//2 )* 0.66*sigma
+    SX, SY = np.meshgrid(sx, -sx)
+
+    #psf and images
     
     psf = np.empty( (N, N, Ndet**2 ) )
     
-    # input_ = np.fft.fft2( h )
-    
-    # for i in range( len(shifts) ):
-    #     psf[:, :, i]  = fourier_shift( input_, shifts[i] )
-    #     psf[:, :, i]  = np.real( np.fft.ifftn( psf[:,:,i] ) )
-    
-    #images
-    
     signal = 5e3 * gauss2d(SX, SY, 0, 0, 2).ravel()
-    sigma = 3
-    
+
     data = np.empty( (N, N, Ndet**2 ) )
     h = np.empty( (N, N, Ndet**2 ) )
     
@@ -72,9 +55,6 @@ def make_sample_data():
         h[:, :, i] = gauss2d(X, Y, SX.ravel()[i], SY.ravel()[i], sigma)
         data[:, :, i] = signal[i] * convolve(obj, h[:, :, i], mode='same') # convolve(obj, psf[:, :, i], mode='same')
         data[data<0] = 0
-        
-        plt.figure()
-        plt.imshow(h[:, :, i])
         
     img = poisson(lam = data)
     
