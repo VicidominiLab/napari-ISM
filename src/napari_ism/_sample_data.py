@@ -44,8 +44,6 @@ def make_sample_data():
 
     #psf and images
     
-    psf = np.empty( (N, N, Ndet**2 ) )
-    
     signal = 5e3 * gauss2d(SX, SY, 0, 0, 2).ravel()
 
     data = np.empty( (N, N, Ndet**2 ) )
@@ -59,7 +57,7 @@ def make_sample_data():
     img = poisson(lam = data)
     
     # optional kwargs for the corresponding viewer.add_* method
-    add_kwargs = {}
+    add_kwargs = {'colormap': 'viridis'}
 
     layer_type = "image"  # optional, default is "image"
     

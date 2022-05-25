@@ -74,7 +74,7 @@ def reader_h5(path):
     data = np.squeeze(dset)
 
     # optional kwargs for the corresponding viewer.add_* method
-    add_kwargs = {}
+    add_kwargs = {'colormap': 'magma'}
 
     layer_type = "image"  # optional, default is "image"
     return [(data, add_kwargs, layer_type)]
@@ -111,7 +111,7 @@ def reader_npy(path):
     data = np.squeeze(np.stack(arrays))
 
     # optional kwargs for the corresponding viewer.add_* method
-    add_kwargs = {}
+    add_kwargs = {'colormap': 'magma'}
 
     layer_type = "image"  # optional, default is "image"
     return [(data, add_kwargs, layer_type)]
