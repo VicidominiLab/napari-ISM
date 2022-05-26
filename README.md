@@ -7,11 +7,9 @@
 [![codecov](https://codecov.io/gh/VicidominiLab/napari-ISM/branch/main/graph/badge.svg)](https://codecov.io/gh/VicidominiLab/napari-ISM)
 [![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-ISM)](https://napari-hub.org/plugins/napari-ISM)
 
-It performs Adaptive Pixel Reassignment.
-
+It performs Adaptive Pixel Reassignment via a phase-correlation algorithm. Once installed, you can upload any ISM-dataset in .h5 or .npy format. The plugin expects a numpy array of the format _rzxytc_ (r: repetition, z: axial dimension, xy: lateral dimensions, t: time dimension, c: detector element). If the _rzt_ dimensions are not present, add manually fake dimensions (e.g. using the _numpy.expand_dims_ function).
+You can also generate a synthetic ISM-dataset from the File menu. Once a dataset is uploaded on an image layer, you can use the Napari plugin menu to perform either a sum on the _c_ dimension or perform Adaptive Pixel Reassignment on the _c_ dimension.
 ----------------------------------
-
-This [napari] plugin was generated with [Cookiecutter] using [@napari]'s [cookiecutter-napari-plugin] template.
 
 <!--
 Don't miss the full getting started guide to set up your new package:
@@ -27,12 +25,20 @@ You can install `napari-ISM` via [pip]:
 
     pip install napari-ISM
 
+It requires the following Python packages
 
+    numpy
+	scipy
+	scikit-image
+    h5py
+	napari
+
+<!--
 
 To install latest development version :
 
     pip install git+https://github.com/VicidominiLab/napari-ISM.git
-
+-->
 
 ## Contributing
 
