@@ -21,32 +21,77 @@ import brighteyes_ism.simulation.PSF_sim as ism
 # to indicate it should be wrapped as a magicgui to autogenerate
 # a widget.
 
-def integrateDims(img_layer: "napari.layers.Image", dim = (0, 4) ) -> "napari.types.ImageData":
+def Focus_ISM(img_layer: "napari.layers.Image", shape_layer: "napari.layers.Shapes", sigma_B_bound = 2, threshold = 25) -> "napari.types.LayerDataTuple":
     
     data = img_layer.data_raw
+    scale = img_layer.scale
     
-    sdata = np.sum(data, axis = dim  ) # sum over repetion and time
-    
-    return 
+    rect = shape_layer.data[0][:,:-1]
 
-def MultiImgDeconvolution(psf_layer: "napari.layers.Image", img_layer: "napari.layers.Image", iterations = 5) -> "napari.types.ImageData":
+    scalenew = (scale[0], scale[1])
+    
+    min_val = rect.min(axis=0).astype(int)
+    max_val = rect.max(axis=0).astype(int)
+    # tl = np.array([min_val[0], min_val[1]])
+    # br = np.array([max_val[0], max_val[1]])
+    # box = np.round(np.array([tl, br])).astype(int)
+    
+    calib = data[min_val[0]: max_val[0], min_val[1]: max_val[1], :]
+    
+    
+    sig, bkg, ism = focusISM(data, sigma_B_bound = sigma_B_bound, threshold = threshold, calibration = calib)
+    
+    ###
+    
+    add_kwargs = {'colormap': 'magma', 'scale': scalenew, 'name': 'Focus-ISM'}
+    
+    layer_type = "image"  # optional, default is "image"
+    
+    return [(sig, add_kwargs, layer_type)]
+
+def integrateDims(img_layer: "napari.layers.Image", dim = (0, 1, 4) ) -> "napari.types.LayerDataTuple":
+    
+    dim = tuple(dict.fromkeys(dim))
+    
+    data = img_layer.data_raw
+    scale = img_layer.scale
+
+    scalenew = [element for i, element in enumerate(scale) if i not in dim]
+
+    sumdata = np.sum(data, axis = dim) # sum over repetion and time
+    
+    add_kwargs = {'colormap': 'magma', 'scale': scalenew, 'name': 'Compressed'}
+    
+    layer_type = "image"  # optional, default is "image"
+    
+    return [(sumdata, add_kwargs, layer_type)]
+
+def MultiImgDeconvolution(psf_layer: "napari.layers.Image", img_layer: "napari.layers.Image", iterations = 5) -> "napari.types.LayerDataTuple":
 
     psf = psf_layer.data_raw
     img = img_layer.data_raw
     
+    scale = img_layer.scale
+    
     result = MultiImg_RL_FFT( psf, img, max_iter = iterations )
     
-    return result
+    add_kwargs = {'colormap': 'magma', 'scale': (scale[0], scale[1]), 'name': 'Deconvolved'}
 
-def SimulatePSFs(img_layer: "napari.layers.Image", pxsizex = 25, pxdim = 50, pxpitch = 75, M = 500, exWl = 640, emWl = 660) -> "napari.types.ImageData":
+    layer_type = "image"  # optional, default is "image"
+    
+    return [(result, add_kwargs, layer_type)]
+
+def SimulatePSFs(img_layer: "napari.layers.Image", pxdim = 50, pxpitch = 75, M = 500, exWl = 640, emWl = 660) -> "napari.types.LayerDataTuple":# -> "napari.types.ImageData":
     """Generates an image"""
     
     img = img_layer.data_raw
+    scale = img_layer.scale
+
     sz = img.shape
     
     N = int( np.sqrt(sz[-1]) ) # number of detector elements in each dimension
     Nx = sz[0] # number of pixels of the simulation space
-    pxsizex = pxsizex # pixel size of the simulation space (nm)
+    pxsizex = scale[0] # pixel size of the simulation space (nm)
     pxdim = pxdim*1e3 # detector element size in real space (nm)
     pxpitch = pxpitch*1e3 # detector element pitch in real space (nm)
     M = M # total magnification of the optical system (e.g. 100x objective follewd by 5x telescope)
@@ -65,24 +110,25 @@ def SimulatePSFs(img_layer: "napari.layers.Image", pxsizex = 25, pxdim = 50, pxp
     
     PSF, detPSF, exPSF = ism.SPAD_PSF_2D(N, Nx, pxpitch, pxdim, pxsizex, M, exPar, emPar, z_shift=z_shift)
     PSF /= np.max(PSF)
-
-    return PSF
-
-def gauss2d(X, Y, mux, muy, sigma):
     
-    # R = np.sqrt(X**2 + Y**2)
-    g = np.exp( -( (X - mux)**2 + (Y - muy)**2)/(2*sigma**2) )
+    add_kwargs = {'colormap': 'magma', 'scale': scale, 'name': 'PSFs'}
+
+    layer_type = "image"  # optional, default is "image"
     
-    return g / np.sum(g)
+    return [(PSF, add_kwargs, layer_type)]
 
 
-def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.types.ImageData":
+def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.types.LayerDataTuple":
 
     data = img_layer.data_raw
+    scale = img_layer.scale
     
     if data.ndim < 4:
         data = np.expand_dims(data, axis=0)
-    
+        scale = (1, scale[0], scale[1])
+    else:
+        scale = (scale[0], scale[1])
+        
     sz = data.shape
     
     data2 = np.empty( sz )
@@ -94,13 +140,15 @@ def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.t
     
     data_apr[data_apr<0] = 0
     
-    # return data_apr
-    
-    result = np.expand_dims(data_apr, axis = -1)
+    # result = np.expand_dims(data_apr, axis = -1)
     
     # # result = np.repeat(result, sz[-1], axis = -1)
     
-    return result
+    add_kwargs = {'colormap': 'magma', 'scale': scale, 'name': 'APR'}
+
+    layer_type = "image"  # optional, default is "image"
+    
+    return [(data_apr, add_kwargs, layer_type)]
 
 def SumSPAD(img_layer: "napari.layers.Image") -> "napari.types.ImageData":
     
@@ -116,4 +164,8 @@ def SumSPAD(img_layer: "napari.layers.Image") -> "napari.types.ImageData":
     
     result = np.repeat(result, sz[-1], axis = data_sum.ndim )
     
-    return result
+    add_kwargs = {'colormap': 'magma'}
+
+    layer_type = "image"  # optional, default is "image"
+    
+    return [(result, add_kwargs, layer_type)]

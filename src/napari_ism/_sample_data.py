@@ -15,13 +15,6 @@ from scipy.signal import convolve
 import brighteyes_ism.simulation.PSF_sim as ism
 import brighteyes_ism.simulation.Tubulin_sim as simTub
 
-def gauss2d(X, Y, mux, muy, sigma):
-    
-    # R = np.sqrt(X**2 + Y**2)
-    g = np.exp( -( (X - mux)**2 + (Y - muy)**2)/(2*sigma**2) )
-    
-    return g / np.sum(g)
-
 
 def make_sample_data():
     """Generates an image"""
@@ -76,10 +69,9 @@ def make_sample_data():
     img = np.uint16(img)
     img = poisson(img)
     
-    
-    
     # optional kwargs for the corresponding viewer.add_* method
-    add_kwargs = {'colormap': 'viridis'}
+    scale = (pxsizex, pxsizex, 1)
+    add_kwargs = {'colormap': 'magma', 'scale' : scale}
 
     layer_type = "image"  # optional, default is "image"
     
