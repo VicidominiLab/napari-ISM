@@ -19,7 +19,13 @@ contributions:
       title: Make example function widget
     - id: napari-ISM.SumSPAD
       python_name: napari_ism._widget:SumSPAD
-      title: Make example function widget 
+      title: Make example function widget
+    - id: napari-ISM.MultiImgDeconvolution
+      python_name: napari_ism._widget:MultiImgDeconvolution
+      title: Make example function widget
+    - id: napari-ISM.SimulatePSFs
+      python_name: napari_ism._widget:SimulatePSFs
+      title: Make example function widget
   readers:
     - command: napari-ISM.get_reader
       accepts_directories: false
@@ -33,7 +39,7 @@ contributions:
       filename_extensions: ['.npy', '.h5'] 
   sample_data:
     - command: napari-ISM.make_sample_data
-      display_name: Adaptive Pixel Reassignment
+      display_name: ISM dataset
       key: unique_id.1 
   widgets:
     - command: napari-ISM.APR_stack
@@ -42,3 +48,9 @@ contributions:
     - command: napari-ISM.SumSPAD
       autogenerate: true
       display_name: Sum
+    - command: napari-ISM.MultiImgDeconvolution
+      autogenerate: true
+      display_name: Deconvolution
+    - command: napari-ISM.SimulatePSFs
+      autogenerate: true
+      display_name: PSFs
