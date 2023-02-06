@@ -92,7 +92,6 @@ Select a threshold (`threshold`) in units of photon counts. Scan coordinates wit
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/shapes.png)
 
-
 ## Contributing
 
 Contributions are very welcome. Tests can be run with [tox], please ensure
