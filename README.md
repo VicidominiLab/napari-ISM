@@ -60,25 +60,35 @@ The default axes are 0 (repetition), 1 (axial position), and 4 (time).
 
 Note that all the analysis commands expect an input with size `X x Y X Ch`.
 
-To see the result of summing over the SPAD dimensions `Ch`, use the plugin command `Sum`.
+To see the result of summing over the SPAD dimensions `Ch`, use the plugin command `Sum`. Then, press `Run`.
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/sum.png)
 
 To see the result of Adaptive Pixel Reassignment, use the plugin command `APR_stack`.
+Select as reference image (`ref`) the central one. Select an upsampling factor (`usf`), 
+which corresponds to the sub-pixel precision of the shift-vector estimation. Then, press `Run`.
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/apr.png)
 
-To generate the PSFs, use the plugin command `PSFs`.
+To generate the PSFs, use the plugin command `PSFs`. Select an image layer (`img layer`), 
+it will be used to determine the number of pixels and the pixel size.
+Then, select the detector pixel size (`pxsize`) and pixel pitch (`pxpitch`) in microns.
+Select the magnification of the system (`M`). Select the excitation (`exWl`) and emission wavelength (`emWl`) in nanometers.
+Then, press `Run`.
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/PSF.png)
 
 To see the result of multi-image deconvolution, use the plugin command `Deconvolution`.
+Select an image layer (`img layer`) containing the ISM dataset to deconvolve and another image layer (`psf layer`) containing the PSFs, either simulated or experimental.
+Then, press `Run`.
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/deconv.png)
 
 To use Focus-ISM, first select a region on the input dataset using a `shapes` layer.
 Select a rectangle containing mainly in-focus emitters. It will be used as a calibration.
-Then, use the plugin command `Focus-ISM`.
+Then, use the plugin command `Focus-ISM`. Select an image layer (`img layer`) containing the ISM dataset and a shape layer (`shape layer`) defining the calibration region.
+Select a lower bound for the standard deviation of the out-of-focus curve (`sigma B bound`) in units of standard deviations of the in-focus term. We suggest to never select a value below 2.
+Select a threshold (`threshold`) in units of photon counts. Scan coordinates with less photons than the threshold will be skipped in the analysis and classified as background.
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/shapes.png)
 
