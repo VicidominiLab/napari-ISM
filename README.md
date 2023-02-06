@@ -4,10 +4,11 @@
 [![License](https://img.shields.io/pypi/l/napari-ISM.svg?color=green)](https://github.com/VicidominiLab/napari-ISM/raw/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/napari-ISM.svg?color=green)](https://pypi.org/project/napari-ISM)
 [![Python Version](https://img.shields.io/pypi/pyversions/napari-ISM.svg?color=green)](https://python.org)
-<!--
-[![tests](https://github.com/VicidominiLab/napari-ISM/workflows/tests/badge.svg)](https://github.com/VicidominiLab/napari-ISM/actions)
-[![codecov](https://codecov.io/gh/VicidominiLab/napari-ISM/branch/main/graph/badge.svg)](https://codecov.io/gh/VicidominiLab/napari-ISM)
--->
+
+
+This plugin is built upon the python package BrightEyes-ISM, available at: https://github.com/VicidominiLab/BrightEyes-ISM
+Napari-ISM enables the simulation, loading, and analysis of ISM datasets. More in detail, 
+
 
 
 It performs Adaptive Pixel Reassignment via a phase-correlation algorithm. Once installed, you can upload any ISM-dataset in .h5 or .npy format. The plugin expects a numpy array of the format _rzxytc_ (r: repetition, z: axial dimension, xy: lateral dimensions, t: time dimension, c: detector element). If the _rzt_ dimensions are not present, add manually fake dimensions (e.g. using the _numpy.expand_dims_ function).
@@ -28,21 +29,19 @@ https://napari.org/plugins/index.html
 You can install `napari-ISM` via [pip]:
 
     pip install napari-ISM
+    
+or by using [napari hub].
 
 It requires the following Python packages
 
     numpy
-	scipy
-	scikit-image
+    scipy
     h5py
-	napari
+    brighteyes-ism
 
-<!--
+## Documentation
 
-To install latest development version :
 
-    pip install git+https://github.com/VicidominiLab/napari-ISM.git
--->
 
 ## Contributing
 
@@ -71,7 +70,8 @@ If you encounter any problems, please [file an issue] along with a detailed desc
 
 [file an issue]: https://github.com/VicidominiLab/napari-ISM/issues
 
+[napari hub]: https://www.napari-hub.org/plugins/napari-ISM
 [napari]: https://github.com/napari/napari
 [tox]: https://tox.readthedocs.io/en/latest/
 [pip]: https://pypi.org/project/pip/
-[PyPI]: https://pypi.org/
+[PyPI]: https://pypi.org/project/napari-ISM/
