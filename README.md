@@ -52,12 +52,36 @@ To acces the plugin list, go to `Plugins > Napari-ISM`.
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/plugin_list.png)
 
-To open a .h5 file, go to `File > Open `. 
+To open a .h5 file, go to `File > Open `.
+You can then sum over the dimensions that are not needed, using the command `integrateDims`.
+The default axes are 0 (repetition), 1 (axial position), and 4 (time).
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/file.png)
 
-You can then compress the file, summing over the dimensions that are not needed, using the command `integrateDims`.
-The default axes are 0 (repetition), 1 (axial position), and 4 (time).
+Note that all the analysis commands expect an input with size `X x Y X Ch`.
+
+To see the result of summing over the SPAD dimensions `Ch`, use the plugin command `Sum`.
+
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/sum.png)
+
+To see the result of Adaptive Pixel Reassignment, use the plugin command `APR_stack`.
+
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/apr.png)
+
+To generate the PSFs, use the plugin command `PSFs`.
+
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/PSF.png)
+
+To see the result of multi-image deconvolution, use the plugin command `Deconvolution`.
+
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/deconv.png)
+
+To use Focus-ISM, first select a region on the input dataset using a `shapes` layer.
+Select a rectangle containing mainly in-focus emitters. It will be used as a calibration.
+Then, use the plugin command `Focus-ISM`.
+
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/shapes.png)
+
 
 ## Contributing
 
