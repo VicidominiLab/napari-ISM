@@ -88,7 +88,7 @@ To use Focus-ISM, first select a region on the input dataset using a `shapes` la
 Select a rectangle containing mainly in-focus emitters. It will be used as a calibration.
 Then, use the plugin command `Focus-ISM`. Select an image layer (`img layer`) containing the ISM dataset and a shape layer (`shape layer`) defining the calibration region.
 Select a lower bound for the standard deviation of the out-of-focus curve (`sigma B bound`) in units of standard deviations of the in-focus term. We suggest to never select a value below 2.
-Select a threshold (`threshold`) in units of photon counts. Scan coordinates with less photons than the threshold will be skipped in the analysis and classified as background.
+Select a threshold (`threshold`) in units of photon counts. Scan coordinates with less photons than the threshold will be skipped in the analysis and classified as background. Then, press `Run`.
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/shapes.png)
 
