@@ -44,7 +44,20 @@ It requires the following Python packages
 
 ## Documentation
 
+To generate a simulated dataset, go to `File > Open Sample > ISM dataset`. 
 
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/sample.png)
+
+To acces the plugin list, go to `Plugins > Napari-ISM`.
+
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/plugin_list.png)
+
+To open a .h5 file, go to `File > Open `. 
+
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/file.png)
+
+You can then compress the file, summing over the dimensions that are not needed, using the command `integrateDims`.
+The default axes are 0 (repetition), 1 (axial position), and 4 (time).
 
 ## Contributing
 
