@@ -9,55 +9,69 @@ Replace code below according to your needs.
 # from __future__ import annotations
 
 import numpy as np
-from numpy.random import poisson, rand
+from numpy.random import poisson
 from scipy.signal import convolve
-# from scipy.ndimage import fourier_shift
-# import matplotlib.pyplot as plt
 
-def gauss2d(X, Y, mux, muy, sigma):
-    
-    # R = np.sqrt(X**2 + Y**2)
-    g = np.exp( -( (X - mux)**2 + (Y - muy)**2)/(2*sigma**2) )
-    
-    return g / np.sum(g)
+import brighteyes_ism.simulation.PSF_sim as ism
+import brighteyes_ism.simulation.Tubulin_sim as simTub
 
 
 def make_sample_data():
     """Generates an image"""
     
-    #object space
+    N = 5 # number of detector elements in each dimension
+    Nx = 201 # number of pixels of the simulation space
+    pxsizex = 25 # pixel size of the simulation space (nm)
+    pxdim = 50e3 # detector element size in real space (nm)
+    pxpitch = 75e3 # detector element pitch in real space (nm)
+    M = 500 # total magnification of the optical system (e.g. 100x objective follewd by 5x telescope)
     
-    N = 513
     
-    x = np.arange(N) - N//2
-    X, Y = np.meshgrid(x, x)
+    exPar = ism.simSettings()
+    exPar.wl = 640 # excitation wavelength (nm)
+    exPar.mask_sampl = 31
     
-    obj = rand(N, N) // 0.9999
+    emPar = exPar.copy()
+    emPar.wl = 660 # emission wavelength (nm)
     
-    #shift vectors
+    z_shift = 0 #nm
     
-    Ndet = 5
-    sigma = 3
+    ###
     
-    sx = ( np.arange(Ndet) - 5//2 )* 0.66*sigma
-    SX, SY = np.meshgrid(sx, -sx)
+    PSF, detPSF, exPSF = ism.SPAD_PSF_2D(N, Nx, pxpitch, pxdim, pxsizex, M, exPar, emPar, z_shift=z_shift)
 
-    #psf and images
-    
-    signal = 5e3 * gauss2d(SX, SY, 0, 0, 2).ravel()
+    PSF /= np.max(PSF)
 
-    data = np.empty( (N, N, Ndet**2 ) )
-    h = np.empty( (N, N, Ndet**2 ) )
+    ### Generate tubulin
+
+    tubulin = simTub.tubSettings()
+    tubulin.xy_pixel_size = pxsizex
+    tubulin.xy_dimension = Nx
+    tubulin.xz_dimension = 1     
+    tubulin.z_pixel = 1     
+    tubulin.n_filament = 5
+    tubulin.radius_filament = pxsizex*0.6
+    tubulin.intensity_filament = [0.5,0.9]  
+    phTub = simTub.functionPhTub(tubulin)
     
-    for i in range( Ndet**2 ):
-        h[:, :, i] = gauss2d(X, Y, SX.ravel()[i], SY.ravel()[i], sigma)
-        data[:, :, i] = signal[i] * convolve(obj, h[:, :, i], mode='same') # convolve(obj, psf[:, :, i], mode='same')
-        data[data<0] = 0
-        
-    img = poisson(lam = data)
+    TubDec = phTub[:,:,0]
+    
+    # Convolve tubulin with psf
+
+    img = np.empty(PSF.shape)
+    
+    for n in range(N**2):
+        img[:, :, n] = convolve(TubDec, PSF[:, :, n] ,mode = 'same')
+    
+    # Convert to photons and add Poisson noise
+    
+    img *= 1e2
+    img = np.uint16(img)
+    img = poisson(img)
     
     # optional kwargs for the corresponding viewer.add_* method
-    add_kwargs = {'colormap': 'viridis'}
+    scale = (pxsizex, pxsizex, 1)
+    add_kwargs = {'colormap': 'magma', 'scale' : scale}
 
     layer_type = "image"  # optional, default is "image"
     

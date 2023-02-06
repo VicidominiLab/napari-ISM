@@ -8,6 +8,8 @@ https://napari.org/plugins/guides.html?#readers
 import numpy as np
 import h5py
     
+import brighteyes_ism.dataio.mcs as mcs
+
 def napari_get_reader(path):
     """A basic implementation of a Reader contribution.
 
@@ -64,17 +66,20 @@ def reader_h5(path):
     
     # Load data
 
-    f = h5py.File(paths[0])
+    data, meta = mcs.load(paths[0])
     
-    data_name = list(f.keys())[0]
-    print(data_name)
-    dset = f[data_name][0,:,:,:,:]
-    dset = np.sum(dset, axis = -2)
+    if meta.dz == 0:
+        dz = 1
+    else:
+        dz = meta.dz*1e3
     
-    data = np.squeeze(dset)
+    dx = meta.dx * 1e3
+    dy = meta.dy * 1e3
+    
+    scale = (1, dz, dx, dy, meta.dt, 1)
 
     # optional kwargs for the corresponding viewer.add_* method
-    add_kwargs = {'colormap': 'magma'}
+    add_kwargs = {'colormap': 'magma', 'scale': scale}
 
     layer_type = "image"  # optional, default is "image"
     return [(data, add_kwargs, layer_type)]
