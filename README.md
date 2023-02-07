@@ -29,7 +29,7 @@ https://napari.org/plugins/index.html
 
 ## Installation
 
-You can install `napari-ISM` via [pip]:
+You can install `napari-ISM` via [PyPI]:
 
     pip install napari-ISM
     
