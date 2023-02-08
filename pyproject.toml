@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel", "h5py", "brighteyes-ism"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "napari-ism"
+name = "napari-ISM"
 version = "1.0.2"
 authors = [
   { name="Alessandro Zunino", email="alessandro.zunino@iit.it" },
@@ -17,7 +17,6 @@ classifiers = [
 	"Programming Language :: Python :: 3.8",
 	"Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
-	"Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
 ]
