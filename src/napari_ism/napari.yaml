@@ -1,5 +1,5 @@
 name: napari-ISM
-display_name: Adaptive Pixel Reassignment
+display_name: Napari-ISM
 contributions:
   commands:
     - id: napari-ISM.get_reader
