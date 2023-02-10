@@ -66,8 +66,11 @@ def reader_h5(path):
     
     # Load data
 
-    data, meta = mcs.load(paths[0])
-    
+    try:
+        data, meta = mcs.load(paths[0])
+    except:
+        data, meta = mcs.load(paths[0], key = 'data_analog')
+
     if meta.dz == 0:
         dz = 1
     else:
