@@ -18,13 +18,15 @@ import brighteyes_ism.simulation.Tubulin_sim as simTub
 
 def make_sample_data():
     """Generates an image"""
-    
-    N = 5 # number of detector elements in each dimension
-    Nx = 201 # number of pixels of the simulation space
-    pxsizex = 25 # pixel size of the simulation space (nm)
-    pxdim = 50e3 # detector element size in real space (nm)
-    pxpitch = 75e3 # detector element pitch in real space (nm)
-    M = 500 # total magnification of the optical system (e.g. 100x objective follewd by 5x telescope)
+
+    grid = ism.GridParameters()
+
+    grid.N = 5 # number of detector elements in each dimension
+    grid.Nx = 201 # number of pixels of the simulation space
+    grid.pxsizex = 25 # pixel size of the simulation space (nm)
+    grid.pxdim = 50e3 # detector element size in real space (nm)
+    grid.pxpitch = 75e3 # detector element pitch in real space (nm)
+    grid.M = 500 # total magnification of the optical system (e.g. 100x objective follewd by 5x telescope)
     
     
     exPar = ism.simSettings()
@@ -38,7 +40,7 @@ def make_sample_data():
     
     ###
     
-    PSF, detPSF, exPSF = ism.SPAD_PSF_2D(N, Nx, pxpitch, pxdim, pxsizex, M, exPar, emPar, z_shift=z_shift)
+    PSF, detPSF, exPSF = ism.SPAD_PSF_2D(grid, exPar, emPar, z_shift=z_shift)
 
     PSF /= np.max(PSF)
 
