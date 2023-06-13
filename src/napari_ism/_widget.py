@@ -12,7 +12,7 @@ from brighteyes_ism.analysis.Tools_lib import fingerprint
 import brighteyes_ism.simulation.PSF_sim as ism
 
 from matplotlib.backends.backend_qt5agg import FigureCanvas
-
+from PyQt5 import QtWidgets
 
 # Uses the `autogenerate: true` flag in the plugin manifest
 # to indicate it should be wrapped as a magicgui to autogenerate
@@ -168,8 +168,13 @@ def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.t
 
         canvas = FigureCanvas(fig)
 
-        widget = viewer.window.add_dock_widget(canvas, name='Shift Vectors', area='right')
-        widget.resize(1000, 1000)
+        viewer.window.add_dock_widget(canvas, name='Shift Vectors', area='right')
+
+        screen = QtWidgets.QDesktopWidget().screenGeometry()
+        width = screen.width()
+
+        canvas.setMinimumHeight(int(width/6))
+        canvas.setMinimumWidth(int(width/6))
 
     # replicate results to match input dimensions
     
