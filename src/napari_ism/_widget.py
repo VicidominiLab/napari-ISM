@@ -1,11 +1,18 @@
 # import napari
 import numpy as np
+import napari
 
 from brighteyes_ism.analysis.APR_lib import APR
 from brighteyes_ism.analysis.Deconv_lib import MultiImg_RL_FFT
 from brighteyes_ism.analysis.FocusISM_lib import focusISM
 
+from brighteyes_ism.analysis.Graph_lib import PlotShiftVectors
+from brighteyes_ism.analysis.Tools_lib import fingerprint
+
 import brighteyes_ism.simulation.PSF_sim as ism
+
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+
 
 # Uses the `autogenerate: true` flag in the plugin manifest
 # to indicate it should be wrapped as a magicgui to autogenerate
@@ -141,15 +148,29 @@ def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.t
         
     sz = data.shape
     
-    data2 = np.empty( sz )
+    data2 = np.empty(sz)
+    shifts = np.empty( [sz[0], sz[-1], 2] )
     
     for n in range(sz[0]):
-        data2[n,:,:,:] = APR(data[n,:,:,:], usf, ref)[1]
-    
-    data_apr = np.squeeze( np.sum(data2, axis = -1) )
-    
-    data_apr[data_apr<0] = 0
-    
+        shifts[n], data2[n] = APR(data[n], usf, ref)
+
+    shifts = np.squeeze(shifts)
+    data_apr = np.squeeze(data2.sum(axis=-1))
+    data_apr[data_apr < 0] = 0
+
+    # Plot shift vectors
+
+    if sz[0] < 2:
+        viewer = napari.current_viewer()
+
+        fing = fingerprint(data)
+        fig, ax = PlotShiftVectors( shifts, color = fing )
+
+        canvas = FigureCanvas(fig)
+
+        widget = viewer.window.add_dock_widget(canvas, name='Shift Vectors', area='right')
+        widget.resize(1000, 1000)
+
     # replicate results to match input dimensions
     
     result = np.expand_dims(data_apr, axis = -1)
@@ -161,7 +182,7 @@ def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.t
     add_kwargs = {'colormap': 'magma', 'scale': scalenew, 'name': 'APR'}
 
     layer_type = "image"  # optional, default is "image"
-    
+
     return [(result, add_kwargs, layer_type)]
 
 
