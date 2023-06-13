@@ -30,40 +30,39 @@ def make_sample_data():
     
     ###
     
-    PSF, detPSF, exPSF = ism.SPAD_PSF_2D(grid, exPar, emPar, z_shift=z_shift)
-
-    PSF /= np.max(PSF)
+    PSF, detPSF, exPSF = ism.SPAD_PSF_2D(grid, exPar, emPar, z_shift=z_shift, normalize=True)
 
     ### Generate tubulin
 
     tubulin = simTub.tubSettings()
-    tubulin.xy_pixel_size = pxsizex
-    tubulin.xy_dimension = Nx
-    tubulin.xz_dimension = 1     
+    tubulin.xy_pixel_size = grid.pxsizex
+    tubulin.xy_dimension = grid.Nx
+    tubulin.xz_dimension = 1
     tubulin.z_pixel = 1     
     tubulin.n_filament = 5
-    tubulin.radius_filament = pxsizex*0.6
-    tubulin.intensity_filament = [0.5,0.9]  
+    tubulin.radius_filament = grid.pxsizex*0.6
+    tubulin.intensity_filament = [0.5, 0.9]
     phTub = simTub.functionPhTub(tubulin)
     
-    TubDec = phTub[:,:,0]
-    
+    TubDec = phTub[:, :, 0]
+    flux = 1e4
+    obj = TubDec * flux
+
     # Convolve tubulin with psf
 
     img = np.empty(PSF.shape)
     
-    for n in range(N**2):
-        img[:, :, n] = convolve(TubDec, PSF[:, :, n] ,mode = 'same')
+    for n in range(grid.N**2):
+        img[:, :, n] = convolve(obj, PSF[:, :, n], mode='same')
     
     # Convert to photons and add Poisson noise
-    
-    img *= 1e2
+    img[img < 0] = 0
     img = np.uint16(img)
     img = poisson(img)
     
     # optional kwargs for the corresponding viewer.add_* method
-    scale = (pxsizex, pxsizex, 1)
-    add_kwargs = {'colormap': 'magma', 'scale' : scale}
+    scale = (grid.pxsizex, grid.pxsizex, 1)
+    add_kwargs = {'colormap': 'magma', 'scale': scale}
 
     layer_type = "image"  # optional, default is "image"
     
