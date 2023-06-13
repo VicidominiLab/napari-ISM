@@ -6,7 +6,7 @@ from brighteyes_ism.analysis.APR_lib import APR
 from brighteyes_ism.analysis.Deconv_lib import MultiImg_RL_FFT
 from brighteyes_ism.analysis.FocusISM_lib import focusISM
 
-from brighteyes_ism.analysis.Graph_lib import PlotShiftVectors
+from brighteyes_ism.analysis.Graph_lib import PlotShiftVectors, ShowFingerprint
 from brighteyes_ism.analysis.Tools_lib import fingerprint
 
 import brighteyes_ism.simulation.PSF_sim as ism
@@ -134,6 +134,23 @@ def SimulatePSFs(img_layer: "napari.layers.Image", pxdim = 50, pxpitch = 75, M =
     
     return [(PSF, add_kwargs, layer_type)]
 
+
+def Fingerprint(img_layer: "napari.layers.Image"):
+
+    viewer = napari.current_viewer()
+    data = img_layer.data_raw
+
+    fig, ax = ShowFingerprint(data)
+
+    canvas = FigureCanvas(fig)
+
+    viewer.window.add_dock_widget(canvas, name='Fingerprint', area='right')
+
+    screen = QtWidgets.QDesktopWidget().screenGeometry()
+    width = screen.width()
+
+    canvas.setMinimumHeight(int(width / 6))
+    canvas.setMinimumWidth(int(width / 6))
 
 def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.types.LayerDataTuple":
 

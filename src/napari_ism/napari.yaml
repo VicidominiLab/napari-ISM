@@ -16,22 +16,25 @@ contributions:
       title: Load sample data from Adaptive Pixel Reassignment 
     - id: napari-ISM.APR_stack
       python_name: napari_ism._widget:APR_stack
-      title: Make example function widget
+      title: Calculate adaptive pixel reassignment on a single dataset or a z-stack
+    - id: napari-ISM.Fingerprint
+      python_name: napari_ism._widget:Fingerprint
+      title: Calculate the fingeprint of a dataset
     - id: napari-ISM.SumSPAD
       python_name: napari_ism._widget:SumSPAD
-      title: Make example function widget
+      title: Generate an image by summing all the channels
     - id: napari-ISM.MultiImgDeconvolution
       python_name: napari_ism._widget:MultiImgDeconvolution
-      title: Make example function widget
+      title: Perform multi-image deconvolution
     - id: napari-ISM.SimulatePSFs
       python_name: napari_ism._widget:SimulatePSFs
-      title: Make example function widget
+      title: Simulate a dataset of PSFs
     - id: napari-ISM.integrateDims
       python_name: napari_ism._widget:integrateDims
-      title: Make example function widget
+      title: Sum the dataset along the specified dimensions
     - id: napari-ISM.Focus_ISM
       python_name: napari_ism._widget:Focus_ISM
-      title: Make example function widget
+      title: Apply focus-ISM on a single dataset
   readers:
     - command: napari-ISM.get_reader
       accepts_directories: false
@@ -51,6 +54,9 @@ contributions:
     - command: napari-ISM.APR_stack
       autogenerate: true
       display_name: APR_stack
+    - command: napari-ISM.Fingerprint
+      autogenerate: true
+      display_name: Fingerprint
     - command: napari-ISM.SumSPAD
       autogenerate: true
       display_name: Sum
