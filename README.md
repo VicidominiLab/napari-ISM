@@ -40,6 +40,7 @@ It requires the following Python packages
     numpy
     scipy
     h5py
+    PyQt5
     brighteyes-ism>=1.2.0
 
 ## Documentation
