@@ -1,10 +1,12 @@
 # import napari
 import numpy as np
 import napari
+from napari_plugin_engine import napari_hook_implementation
 
 from brighteyes_ism.analysis.APR_lib import APR
 from brighteyes_ism.analysis.Deconv_lib import MultiImg_RL_FFT
 from brighteyes_ism.analysis.FocusISM_lib import focusISM
+from brighteyes_ism.analysis.FRC_lib import timeFRC, plotFRC
 
 from brighteyes_ism.analysis.Graph_lib import PlotShiftVectors, ShowFingerprint
 from brighteyes_ism.analysis.Tools_lib import fingerprint
@@ -13,6 +15,8 @@ import brighteyes_ism.simulation.PSF_sim as ism
 
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from PyQt5 import QtWidgets
+
+from magicgui import magicgui
 
 # Uses the `autogenerate: true` flag in the plugin manifest
 # to indicate it should be wrapped as a magicgui to autogenerate
@@ -64,7 +68,9 @@ def integrateDims(img_layer: "napari.layers.Image", dim = (0, 1, 4) ) -> "napari
     add_kwargs = {'colormap': 'magma', 'scale': scalenew, 'name': 'Compressed'}
     
     layer_type = "image"  # optional, default is "image"
-    
+
+    print(sumdata.shape)
+
     return [(sumdata, add_kwargs, layer_type)]
 
 def MultiImgDeconvolution(psf_layer: "napari.layers.Image", img_layer: "napari.layers.Image", iterations = 5) -> "napari.types.LayerDataTuple":
@@ -236,3 +242,33 @@ def SumSPAD(img_layer: "napari.layers.Image") -> "napari.types.LayerDataTuple":
     layer_type = "image"  # optional, default is "image"
     
     return [(result, add_kwargs, layer_type)]
+
+
+@napari_hook_implementation
+def FRC():
+   return _timeFRC
+
+@magicgui(
+    call_button="Calculate",
+    smoothing={"choices": ['fit', 'lowess']},
+)
+def _timeFRC(img_layer: "napari.layers.Image", smoothing: str = 'fit'):
+
+    viewer = napari.current_viewer()
+    data = img_layer.data_raw
+    print(data.shape)
+    scale = img_layer.scale
+
+    frc_result = timeFRC(data, px = scale[0]*1e-3, smoothing = smoothing)
+
+    fig, ax = plotFRC(*frc_result)
+
+    canvas = FigureCanvas(fig)
+
+    viewer.window.add_dock_widget(canvas, name='Fourier Ring Correlation', area='right')
+
+    screen = QtWidgets.QDesktopWidget().screenGeometry()
+    width = screen.width()
+
+    canvas.setMinimumHeight(int(width / 6))
+    canvas.setMinimumWidth(int(width / 6))
