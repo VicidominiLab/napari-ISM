@@ -35,6 +35,9 @@ contributions:
     - id: napari-ISM.Focus_ISM
       python_name: napari_ism._widget:Focus_ISM
       title: Apply focus-ISM on a single dataset
+    - id: napari-ISM.FRC
+      python_name: napari_ism._widget:FRC
+      title: Calculate the FRC curve and resolution from a 3D image (x,y,t)
   readers:
     - command: napari-ISM.get_reader
       accepts_directories: false
@@ -72,3 +75,6 @@ contributions:
     - command: napari-ISM.Focus_ISM
       autogenerate: true
       display_name: Focus_ISM
+    - command: napari-ISM.FRC
+      autogenerate: false
+      display_name: FRC
