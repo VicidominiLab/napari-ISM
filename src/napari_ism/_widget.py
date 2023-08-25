@@ -250,16 +250,17 @@ def FRC():
 
 @magicgui(
     call_button="Calculate",
-    smoothing={"choices": ['fit', 'lowess']},
+    method = {"choices": ['fixed', '3sigma', '5sgigma']},
+    smoothing = {"choices": ['fit', 'lowess']},
 )
-def _timeFRC(img_layer: "napari.layers.Image", smoothing: str = 'fit'):
+def _timeFRC(img_layer: "napari.layers.Image", method: str = 'fixed', smoothing: str = 'fit'):
 
     viewer = napari.current_viewer()
     data = img_layer.data_raw
     print(data.shape)
     scale = img_layer.scale
 
-    frc_result = timeFRC(data, px = scale[0]*1e-3, smoothing = smoothing)
+    frc_result = timeFRC(data, px = scale[0]*1e-3, method = method, smoothing = smoothing)
 
     fig, ax = plotFRC(*frc_result)
 
