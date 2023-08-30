@@ -93,6 +93,12 @@ Select a threshold (`threshold`) in units of photon counts. Scan coordinates wit
 
 ![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/shapes.png)
 
+To use FRC, prepare the dataset to be in the shape `xyt`.
+Select the theshodling method (`method`) and smoothing method (`smoothing`) among those available.
+Then, press `Calculate`.
+
+![](https://github.com/VicidominiLab/napari-ISM/raw/main/docs/frc.png)
+
 ## Contributing
 
 Contributions are very welcome. Tests can be run with [tox], please ensure
