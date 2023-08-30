@@ -4,7 +4,7 @@ contributions:
   commands:
     - id: napari-ISM.get_reader
       python_name: napari_ism._reader:napari_get_reader
-      title: Open data with Adaptive Pixel Reassignment
+      title: Open ISM datasets
     - id: napari-ISM.write_multiple
       python_name: napari_ism._writer:write_multiple
       title: Save multi-layer data with Adaptive Pixel Reassignment
