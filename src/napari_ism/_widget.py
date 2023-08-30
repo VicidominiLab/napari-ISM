@@ -100,7 +100,7 @@ def MultiImgDeconvolution(psf_layer: "napari.layers.Image", img_layer: "napari.l
     
     return [(result, add_kwargs, layer_type)]
 
-def SimulatePSFs(img_layer: "napari.layers.Image", pxdim = 50, pxpitch = 75, M = 500, exWl = 640, emWl = 660) -> "napari.types.LayerDataTuple":# -> "napari.types.ImageData":
+def SimulatePSFs(img_layer: "napari.layers.Image", Nx = 201, pxdim = 50, pxpitch = 75, M = 500, exWl = 640, emWl = 660) -> "napari.types.LayerDataTuple":# -> "napari.types.ImageData":
     
     img = img_layer.data_raw
     scale = img_layer.scale
@@ -111,7 +111,7 @@ def SimulatePSFs(img_layer: "napari.layers.Image", pxdim = 50, pxpitch = 75, M =
 
     grid = ism.GridParameters()
     grid.N = int(np.sqrt(sz[-1]))
-    grid.Nx = sz[0]
+    grid.Nx = Nx
     grid.pxsizex = scale[0]
     grid.pxdim = pxdim*1e3
     grid.pxpitch = pxpitch*1e3
