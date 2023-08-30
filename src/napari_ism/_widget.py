@@ -69,8 +69,6 @@ def integrateDims(img_layer: "napari.layers.Image", dim = (0, 1, 4) ) -> "napari
     
     layer_type = "image"  # optional, default is "image"
 
-    print(sumdata.shape)
-
     return [(sumdata, add_kwargs, layer_type)]
 
 def MultiImgDeconvolution(psf_layer: "napari.layers.Image", img_layer: "napari.layers.Image", iterations = 5) -> "napari.types.LayerDataTuple":
@@ -255,7 +253,7 @@ def _timeFRC(img_layer: "napari.layers.Image", method: str = 'fixed', smoothing:
 
     viewer = napari.current_viewer()
     data = img_layer.data_raw
-    print(data.shape)
+
     scale = img_layer.scale
 
     frc_result = timeFRC(data, px = scale[0]*1e-3, method = method, smoothing = smoothing)
