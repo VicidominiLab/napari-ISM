@@ -101,7 +101,6 @@ def MultiImgDeconvolution(psf_layer: "napari.layers.Image", img_layer: "napari.l
     return [(result, add_kwargs, layer_type)]
 
 def SimulatePSFs(img_layer: "napari.layers.Image", pxdim = 50, pxpitch = 75, M = 500, exWl = 640, emWl = 660) -> "napari.types.LayerDataTuple":# -> "napari.types.ImageData":
-    """Generates an image"""
     
     img = img_layer.data_raw
     scale = img_layer.scale
@@ -109,14 +108,14 @@ def SimulatePSFs(img_layer: "napari.layers.Image", pxdim = 50, pxpitch = 75, M =
     sz = img.shape
     
     # simulation parameters
-    
-    N = int( np.sqrt(sz[-1]) ) # number of detector elements in each dimension
-    Nx = sz[0] # number of pixels of the simulation space
-    pxsizex = scale[0] # pixel size of the simulation space (nm)
-    pxdim = pxdim*1e3 # detector element size in real space (nm)
-    pxpitch = pxpitch*1e3 # detector element pitch in real space (nm)
-    M = M # total magnification of the optical system (e.g. 100x objective follewd by 5x telescope)
-    
+
+    grid = ism.GridParameters()
+    grid.N = int(np.sqrt(sz[-1]))
+    grid.Nx = sz[0]
+    grid.pxsizex = scale[0]
+    grid.pxdim = pxdim*1e3
+    grid.pxpitch = pxpitch*1e3
+    grid.M = M
     
     exPar = ism.simSettings()
     exPar.wl = exWl # excitation wavelength (nm)
@@ -129,8 +128,7 @@ def SimulatePSFs(img_layer: "napari.layers.Image", pxdim = 50, pxpitch = 75, M =
     
     # generate PSFs
     
-    PSF, detPSF, exPSF = ism.SPAD_PSF_2D(N, Nx, pxpitch, pxdim, pxsizex, M, exPar, emPar, z_shift=z_shift)
-    PSF /= np.max(PSF)
+    PSF, detPSF, exPSF = ism.SPAD_PSF_2D(grid, exPar, emPar, z_shift=z_shift)
     
     # create layer
     
