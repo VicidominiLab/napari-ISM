@@ -1,0 +1,8 @@
+numpy
+scipy
+h5py
+qtpy
+napari
+napari-plugin-engine
+matplotlib
+brighteyes-ism>=1.2.2

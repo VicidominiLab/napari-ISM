@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools", "wheel", "h5py", "PyQt5", "brighteyes-ism >= 1.2.0"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "napari-ISM"
-version = "1.0.7"
+version = "1.0.8"
 authors = [
   { name="Alessandro Zunino", email="alessandro.zunino@iit.it" },
 ]
