@@ -1,6 +1,4 @@
 import numpy as np
-import h5py
-    
 import brighteyes_ism.dataio.mcs as mcs
 
 def napari_get_reader(path):
