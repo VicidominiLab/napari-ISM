@@ -14,7 +14,7 @@ from brighteyes_ism.analysis.Tools_lib import fingerprint
 import brighteyes_ism.simulation.PSF_sim as ism
 
 from matplotlib.backends.backend_qt5agg import FigureCanvas
-from PyQt5 import QtWidgets
+from qtpy import QtWidgets
 
 from magicgui import magicgui
 
