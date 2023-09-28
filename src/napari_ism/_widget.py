@@ -351,9 +351,9 @@ def SumSPAD(img_layer: Image) -> LayerDataTuple:
 
 @magic_factory(
     call_button = "Calculate",
-    img_layer = {"label": "ISM dataset:"},
+    img_layer = {"label": "Images:"},
     method = {"choices": ['fixed', '3sigma', '5sgigma'], "label": "Threshold:"},
-    smoothing = {"choices": ['fit', 'lowess'], "label": "Smoothing method:"},
+    smoothing = {"choices": ['fit', 'lowess'], "label": "Smoothing method:"}
 )
 def FRC(img_layer: Image, method: str = 'fixed', smoothing: str = 'fit'):
     '''
