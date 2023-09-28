@@ -1,6 +1,8 @@
 import numpy as np
 
 import napari
+from napari.layers import Shapes, Image
+from napari.types import LayerDataTuple
 
 from brighteyes_ism.analysis.APR_lib import APR
 from brighteyes_ism.analysis.Deconv_lib import MultiImg_RL_FFT
@@ -21,8 +23,27 @@ from magicgui import magic_factory
 # to indicate it should be wrapped as a magicgui to autogenerate
 # a widget.
 
-def Focus_ISM(img_layer: "napari.layers.Image", shape_layer: "napari.layers.Shapes", sigma_B_bound = 2, threshold = 25) -> "napari.types.LayerDataTuple":
-    
+def Focus_ISM(img_layer: Image, shape_layer: Shapes, sigma_B_bound: float = 2,
+              threshold: int = 25) -> LayerDataTuple:
+    '''
+
+    Parameters
+    ----------
+    img_layer : Image
+        Raw ISM dataset to be processed.
+    shape_layer : Shapes
+        Rectangular shape selecting the calibration ROI of the dataset.
+    sigma_B_bound : float
+        Lower bound of the standard deviation of the out-of-focus microimage (units: sigma_A).
+    threshold : int
+        Minimum photon counts per microimage needed to start the fitting.
+        If lower, the pixel is classified as background.
+    Returns
+    -------
+    focus_ISM : napari.types.LayerDataTuple
+        Image layer with the processed image.
+
+    '''
     data = img_layer.data_raw
     scale = img_layer.scale
     
@@ -53,8 +74,23 @@ def Focus_ISM(img_layer: "napari.layers.Image", shape_layer: "napari.layers.Shap
     
     return [(result, add_kwargs, layer_type)]
 
-def integrateDims(img_layer: "napari.layers.Image", dim = (0, 1, 4) ) -> "napari.types.LayerDataTuple":
-    
+def integrateDims(img_layer: Image, dim = (0, 1, 4) ) -> LayerDataTuple:
+    '''
+
+    Parameters
+    ----------
+    img_layer : napari.layers.Image
+        Raw ISM dataset to be processed
+    dim : tuple
+        Indices of the dimensions to be summed.
+        0: Repetition, 1: Z, 2: X, 3: Y, 4: Time, 5: Channel
+
+    Returns
+    -------
+    compressed : LayerDataTuple
+        Compressed ISM dataset
+    '''
+
     dim = tuple(dict.fromkeys(dim))
     
     data = img_layer.data_raw
@@ -70,8 +106,23 @@ def integrateDims(img_layer: "napari.layers.Image", dim = (0, 1, 4) ) -> "napari
 
     return [(sumdata, add_kwargs, layer_type)]
 
-def MultiImgDeconvolution(psf_layer: "napari.layers.Image", img_layer: "napari.layers.Image", iterations = 5) -> "napari.types.LayerDataTuple":
+def MultiImgDeconvolution(psf_layer: Image, img_layer: Image, iterations: int = 5) -> LayerDataTuple:
+    '''
 
+    Parameters
+    ----------
+    psf_layer : Image
+        ISM point spread functions.
+    img_layer : Image
+        Raw ISM dataset to be processed.
+    iterations : int
+        Number of iterations to perform.
+
+    Returns
+    -------
+    deconvolved : LayerDataTuple
+        deconvolved and fused ISM image.
+    '''
     psf = psf_layer.data_raw
     img = img_layer.data_raw
     
@@ -97,8 +148,33 @@ def MultiImgDeconvolution(psf_layer: "napari.layers.Image", img_layer: "napari.l
     
     return [(result, add_kwargs, layer_type)]
 
-def SimulatePSFs(img_layer: "napari.layers.Image", Nx = 201, pxdim = 50, pxpitch = 75, M = 500, exWl = 640, emWl = 660) -> "napari.types.LayerDataTuple":# -> "napari.types.ImageData":
-    
+def SimulatePSFs(img_layer: Image, Nx: int = 201, pxdim: float = 50, pxpitch: float = 75, M: float = 450,
+                 exWl: float = 640, emWl: float = 660) -> LayerDataTuple:
+    '''
+
+    Parameters
+    ----------
+    img_layer : Image
+        ISM dataset, whose pixel size is the target of the simulation.
+    Nx : int
+        Number of pixels.
+    pxdim : float
+        Width of the active area of the individual SPAD element (microns).
+    pxpitch : float
+        Distance between adjacent SPAD elements of the detector (microns).
+    M : float
+        Total magnification of the ISM microscope.
+    exWl : float
+        Excitation wavelength.
+    emWl : float
+        Emission wavelength.
+
+    Returns
+    -------
+    psfs : LayerDataTuple
+        ISM point spread functions.
+    '''
+
     img = img_layer.data_raw
     scale = img_layer.scale
 
@@ -136,8 +212,14 @@ def SimulatePSFs(img_layer: "napari.layers.Image", Nx = 201, pxdim = 50, pxpitch
     return [(PSF, add_kwargs, layer_type)]
 
 
-def Fingerprint(img_layer: "napari.layers.Image"):
+def Fingerprint(img_layer: Image):
+    '''
 
+    Parameters
+    ----------
+    img_layer : Image
+        ISM dataset used for the fingerprint calculation.
+    '''
     viewer = napari.current_viewer()
     data = img_layer.data_raw
 
@@ -153,8 +235,24 @@ def Fingerprint(img_layer: "napari.layers.Image"):
     canvas.setMinimumHeight(int(width / 6))
     canvas.setMinimumWidth(int(width / 6))
 
-def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.types.LayerDataTuple":
+def APR_stack(img_layer: Image, usf = 10, ref = 12) -> LayerDataTuple:
+    '''
 
+    Parameters
+    ----------
+    img_layer : napari.layers.Image
+        Raw ISM dataset to be processed. It can be a stack of datasets.
+    usf :
+        Upsampling factor used to achieve subpixel precision.
+    ref :
+        Reference image used for registration.
+        It should the one generated by the central element of the detector array.
+
+    Returns
+    -------
+    reassigned : LayerDataTuple
+        Reassigned image or stack.
+    '''
     data = img_layer.data_raw
     scale = img_layer.scale
     
@@ -209,8 +307,20 @@ def APR_stack(img_layer: "napari.layers.Image", usf = 10, ref = 12) -> "napari.t
     return [(result, add_kwargs, layer_type)]
 
 
-def SumSPAD(img_layer: "napari.layers.Image") -> "napari.types.LayerDataTuple":
-    
+def SumSPAD(img_layer: Image) -> LayerDataTuple:
+    '''
+
+    Parameters
+    ----------
+    img_layer : Image
+        Raw ISM dataset to be summed along the channel dimension.
+
+    Returns
+    -------
+    summed : LayerDataTuple
+        Reassigned image or stack.
+    '''
+
     data = img_layer.data_raw
     scale = img_layer.scale
     
@@ -240,12 +350,23 @@ def SumSPAD(img_layer: "napari.layers.Image") -> "napari.types.LayerDataTuple":
 
 
 @magic_factory(
-    call_button="Calculate",
-    method = {"choices": ['fixed', '3sigma', '5sgigma']},
-    smoothing = {"choices": ['fit', 'lowess']},
+    call_button = "Calculate",
+    img_layer = {"label": "ISM dataset:"},
+    method = {"choices": ['fixed', '3sigma', '5sgigma'], "label": "Threshold:"},
+    smoothing = {"choices": ['fit', 'lowess'], "label": "Smoothing method:"},
 )
-def FRC(img_layer: "napari.layers.Image", method: str = 'fixed', smoothing: str = 'fit'):
+def FRC(img_layer: Image, method: str = 'fixed', smoothing: str = 'fit'):
+    '''
 
+    Parameters
+    ----------
+    img_layer : Image
+        Time series of images (X x Y x Time).
+    method :
+        Thresholding criterion for the FRC curve.
+    smoothing :
+        Smoothing method for the FRC curve.
+    '''
     viewer = napari.current_viewer()
     data = img_layer.data_raw
 
