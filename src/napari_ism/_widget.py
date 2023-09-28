@@ -1,7 +1,6 @@
 import numpy as np
 
 import napari
-from napari_plugin_engine import napari_hook_implementation
 
 from brighteyes_ism.analysis.APR_lib import APR
 from brighteyes_ism.analysis.Deconv_lib import MultiImg_RL_FFT
@@ -16,7 +15,7 @@ import brighteyes_ism.simulation.PSF_sim as ism
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from qtpy import QtWidgets
 
-from magicgui import magicgui
+from magicgui import magic_factory
 
 # Uses the `autogenerate: true` flag in the plugin manifest
 # to indicate it should be wrapped as a magicgui to autogenerate
@@ -240,16 +239,12 @@ def SumSPAD(img_layer: "napari.layers.Image") -> "napari.types.LayerDataTuple":
     return [(result, add_kwargs, layer_type)]
 
 
-@napari_hook_implementation
-def FRC():
-   return _timeFRC
-
-@magicgui(
+@magic_factory(
     call_button="Calculate",
     method = {"choices": ['fixed', '3sigma', '5sgigma']},
     smoothing = {"choices": ['fit', 'lowess']},
 )
-def _timeFRC(img_layer: "napari.layers.Image", method: str = 'fixed', smoothing: str = 'fit'):
+def FRC(img_layer: "napari.layers.Image", method: str = 'fixed', smoothing: str = 'fit'):
 
     viewer = napari.current_viewer()
     data = img_layer.data_raw
